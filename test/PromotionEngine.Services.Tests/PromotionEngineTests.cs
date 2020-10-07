@@ -12,6 +12,7 @@ namespace PromotionEngine.Services.Tests
 	{
 		private readonly IEnumerable<Product> _products;
 		private readonly ICalculationService _calculationService;
+		private readonly IEnumerable<IPromotion> _promotions;
 
 		public PromotionEngineTests()
 		{
@@ -26,6 +27,13 @@ namespace PromotionEngine.Services.Tests
 			};
 
 			_calculationService = new CalculationService();
+
+			_promotions = new List<IPromotion>
+			{
+				new MultiPromotionService(new MultiPromotion("A", 3, 130)),
+				new MultiPromotionService(new MultiPromotion("B", 2, 45)),
+				new ComboPromotionService(new ComboPromotion(new List<string>{"C","c"}, 30))
+			};
 		}
 
 		[TestMethod]
