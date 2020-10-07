@@ -34,9 +34,9 @@ namespace PromotionEngine.Services.Calculation.Implementation
                 calculatedItems.AddRange(items.Where(x => x.Product.Name == name).Take(numberOfCombos));
             }
 
-            var uncalculatedItems = items.Except(calculatedItems);
+            var remaining = items.Except(calculatedItems);
 
-            total += uncalculatedItems.Any() ? uncalculatedItems.Sum(x => x.Product.Price) : default;
+            total += remaining.Any() ? remaining.Sum(x => x.Product.Price) : 0;
 
             return new Cart(cart.Items.Except(items).ToList(), cart.Total + total);
         }
