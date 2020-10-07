@@ -4,13 +4,14 @@ using PromotionEngine.Services.Calculation.Interfaces;
 using PromotionEngine.Services.Models;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PromotionEngine.Services.Tests
 {
 	[TestClass]
 	public class PromotionEngineTests
 	{
-		private readonly IEnumerable<Product> _products;
+		private readonly List<Product> _products;
 		private readonly ICalculationService _calculationService;
 		private readonly IEnumerable<IPromotion> _promotions;
 
@@ -37,8 +38,58 @@ namespace PromotionEngine.Services.Tests
 		}
 
 		[TestMethod]
-		public void TestMethod1()
+		public void Calculate_Total_With_No_Promotion()
 		{
+			//Arrange
+			var items = new List<Item>() 
+			{
+				new Item(_products[0], 1),
+				new Item(_products[1], 1),
+				new Item(_products[2], 1)
+			};
+
+			//Act
+			var total = _calculationService.GetTotal(items, _promotions);
+
+			//Assert
+			Assert.AreEqual(100, total);
+		}
+
+		[TestMethod]
+		public void Calculate_Total_With_Multi_Promotion()
+		{
+			//Arrange
+			var items = new List<Item>()
+			{
+				new Item(_products[0], 5),
+				new Item(_products[1], 5),
+				new Item(_products[2], 1)
+			};
+
+			//Act
+			var total = _calculationService.GetTotal(items, _promotions);
+
+			//Assert
+			Assert.AreEqual(370, total);
+		}
+
+		[TestMethod]
+		public void Calculate_Total_With_Multi_And_Combo_Promotion()
+		{
+			//Arrange
+			var items = new List<Item>()
+			{
+				new Item(_products[0], 3),
+				new Item(_products[1], 5),
+				new Item(_products[2], 1),
+				new Item(_products[3], 1)
+			};
+
+			//Act
+			var total = _calculationService.GetTotal(items, _promotions);
+
+			//Assert
+			Assert.AreEqual(280, total);
 		}
 	}
 }
