@@ -33,7 +33,7 @@ namespace PromotionEngine.Services.Tests
 			{
 				new MultiPromotionService(new MultiPromotion("A", 3, 130)),
 				new MultiPromotionService(new MultiPromotion("B", 2, 45)),
-				new ComboPromotionService(new ComboPromotion(new List<string>{"C","c"}, 30))
+				new ComboPromotionService(new ComboPromotion(new List<string>{"C","D"}, 30))
 			};
 		}
 

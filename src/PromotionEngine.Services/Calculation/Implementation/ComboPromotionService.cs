@@ -16,30 +16,29 @@ namespace PromotionEngine.Services.Calculation.Implementation
 
 		public Cart ApplyPromotion(Cart cart)
 		{
-            decimal total = default;
-
             var items = cart.Items.Where(x => ComboPromotion.Names.Any(c => c == x.Product.Name)).ToList();
 
             var numberOfCombos = ComboPromotion.Names.Select(x => items.Count(i => i.Product.Name == x)).Min();
 
-            if (numberOfCombos > 0)
+            if(numberOfCombos == 0)
+			{
+                return cart;
+			}
+
+            var total = ComboPromotion.FixedPrice * numberOfCombos;
+
+            var calculatedItems = new List<Item>();
+
+            foreach (var name in ComboPromotion.Names)
             {
-                total = ComboPromotion.FixedPrice * numberOfCombos;
-
-                var calculatedItems = new List<Item>();
-
-                foreach (var name in ComboPromotion.Names)
-                {
-                    calculatedItems.AddRange(items.Where(x => x.Product.Name == name).Take(numberOfCombos));
-                }
-
-                var uncalculatedItems = items.Except(calculatedItems);
-
-                total += uncalculatedItems.Any() ? uncalculatedItems.Sum(x => x.Product.Price) : default;
-
-                return new Cart(cart.Items.Except(items).ToList(), cart.Total + total);
+                calculatedItems.AddRange(items.Where(x => x.Product.Name == name).Take(numberOfCombos));
             }
-            return cart;
+
+            var uncalculatedItems = items.Except(calculatedItems);
+
+            total += uncalculatedItems.Any() ? uncalculatedItems.Sum(x => x.Product.Price) : default;
+
+            return new Cart(cart.Items.Except(items).ToList(), cart.Total + total);
         }
 	}
 }
