@@ -2,7 +2,7 @@
 
 namespace PromotionEngine.Services.Models
 {
-	class ComboPromotion
+	public class ComboPromotion
 	{
 		public IEnumerable<string> Names { get; private set; }
 
