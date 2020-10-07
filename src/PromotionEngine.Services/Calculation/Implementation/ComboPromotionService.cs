@@ -1,5 +1,7 @@
 ﻿using PromotionEngine.Services.Calculation.Interfaces;
 using PromotionEngine.Services.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PromotionEngine.Services.Calculation.Implementation
 {
@@ -14,7 +16,30 @@ namespace PromotionEngine.Services.Calculation.Implementation
 
 		public Cart ApplyPromotion(Cart cart)
 		{
-			throw new System.NotImplementedException();
-		}
+            decimal total = default;
+
+            var items = cart.Items.Where(x => ComboPromotion.Names.Any(c => c == x.Product.Name)).ToList();
+
+            var numberOfCombos = ComboPromotion.Names.Select(x => items.Count(i => i.Product.Name == x)).Min();
+
+            if (numberOfCombos > 0)
+            {
+                total = ComboPromotion.FixedPrice * numberOfCombos;
+
+                var calculatedItems = new List<Item>();
+
+                foreach (var name in ComboPromotion.Names)
+                {
+                    calculatedItems.AddRange(items.Where(x => x.Product.Name == name).Take(numberOfCombos));
+                }
+
+                var uncalculatedItems = items.Except(calculatedItems);
+
+                total += uncalculatedItems.Any() ? uncalculatedItems.Sum(x => x.Product.Price) : default;
+
+                return new Cart(cart.Items.Except(items).ToList(), cart.Total + total);
+            }
+            return cart;
+        }
 	}
 }

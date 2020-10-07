@@ -6,9 +6,12 @@ namespace PromotionEngine.Services.Models
 	{
 		public IEnumerable<Item> Items { get; private set; }
 
-		public Cart(IEnumerable<Item> items)
+		public decimal Total { get; private set; }
+
+		public Cart(IEnumerable<Item> items, decimal total)
 		{
 			Items = items;
+			Total = total;
 		}
 	}
 }

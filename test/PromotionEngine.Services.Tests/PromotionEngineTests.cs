@@ -41,6 +41,22 @@ namespace PromotionEngine.Services.Tests
 		public void Calculate_Total_With_No_Promotion()
 		{
 			//Arrange
+			var items = new List<Item>()
+			{
+				new Item(_products[2], 1)
+			};
+
+			//Act
+			var total = _calculationService.GetTotal(items, _promotions);
+
+			//Assert
+			Assert.AreEqual(20, total);
+		}
+
+		[TestMethod]
+		public void Calculate_Total_With_No_Promotion_Applicable()
+		{
+			//Arrange
 			var items = new List<Item>() 
 			{
 				new Item(_products[0], 1),
